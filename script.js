@@ -3,10 +3,20 @@ let bestScoreBox = document.getElementById("best-score")
 
 const snakeSpeed = 150;
 let score = 0;
-let apple = { x: 20, y: 10 };
-let FieldSize = 500;
-let squareSize = 20;
+let apple = { 
+  x: 20, 
+  y: 10 
+};
 
+class fieldSize{
+  constructor(FieldSize, squareSize){
+    this._FieldSize = FieldSize
+    this._squareSize = squareSize
+    this.numOfSquare = this._FieldSize / this._squareSize
+  }
+}
+
+const field1 = new fieldSize(500, 20)
 bestResult();
 
 let snake = [
@@ -18,13 +28,13 @@ let snake = [
 
 function drawSnake(){
   for (let i = 0; i < snake.length; i++){
-  let snakeBody = `<div class="snake" style='left:${snake[i].x * squareSize + "px"}; top: ${snake[i].y * squareSize + "px"}'>`;
+  let snakeBody = `<div class="snake" style='left:${snake[i].x * field1._squareSize + "px"}; top: ${snake[i].y * field1._squareSize + "px"}'>`;
   gameField.innerHTML += snakeBody;
   }
 };
 
 function drawApple(){
-  let applePlace = `<div class="apple" style='left:${apple.x * squareSize + "px"}; top: ${apple.y * squareSize + "px"}'>`;
+  let applePlace = `<div class="apple" style='left:${apple.x * field1._squareSize + "px"}; top: ${apple.y * field1._squareSize + "px"}'>`;
   gameField.innerHTML += applePlace;
 };
 
@@ -67,6 +77,7 @@ function changeDirection(keyCode) {
 }
 
 
+
 function moveSnake() {
   let startMove = { x: snake[0].x, y: snake[0].y };
   if (direction === "right") {
@@ -100,28 +111,17 @@ function moveSnake() {
     resetGame();
   }
 }
+
 function generateApple() {
-      apple.x = Math.floor(Math.random() * (FieldSize / squareSize));
-      apple.y = Math.floor(Math.random() * (FieldSize / squareSize));
+      apple.x = Math.floor(Math.random() * (field1.numOfSquare));
+      apple.y = Math.floor(Math.random() * (field1.numOfSquare));
   
 }
 
-
-
-
 function Collision() {
-  let head = snake[0];
-  if (head.x >= FieldSize / squareSize) {
-    head.x = 0;
-  };
-  if (head.x < 0){
-    head.x = (FieldSize / squareSize - 1);
-  };
-  if(head.y >= FieldSize / squareSize){
-    head.y = 0;
-  }
-  if (head.y < 0){
-    head.y = (FieldSize / squareSize- 1);
+  head = snake[0];
+  if (head.x >= field1.numOfSquare || head.y >= field1.numOfSquare || head.y < 0 || head.x < 0) {
+    return true;
   };
 
   for (let i = 1; i < snake.length; i++) {
@@ -133,12 +133,12 @@ function Collision() {
 }
 
 function saveResult(){
-    if (score > bestScore){
-      localStorage.setItem("bestScore", score);
-      bestScore = localStorage;
-      bestScoreBox.textContent = "Лучший результат: " + score;
-    }
+  if (score > bestScore){
+    localStorage.setItem("bestScore", score);
+    bestScore = localStorage;
+    bestScoreBox.textContent = "Лучший результат: " + score;
   }
+}
   function bestResult(){
     if (localStorage.getItem("bestScore")){
       bestScoreBox.textContent = "Лучший результат: " + localStorage.getItem("bestScore");
@@ -166,7 +166,3 @@ function resetGame() {
 
 let direction = "right";
 setInterval(gameLoop, snakeSpeed);
-
-
-
-/*https://habr.com/ru/articles/522380/*/
