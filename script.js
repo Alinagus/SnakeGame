@@ -170,7 +170,7 @@ class Result{
 }
 
 let newGame = new GameField(500, 20);
-let newSnake = new Snake(150);
+let newSnake = new Snake(500);
 let newApple = new Apple(newGame.field)
 let getResult = new Result(0);
 
