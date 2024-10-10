@@ -64,17 +64,6 @@ class GameField{
 
   }
 
-
-  gameLoop() {
-    this.clearElement();
-    newSnake.drawSnake();
-    newApple.drawApple();
-    getResult.updateScore();
-    this.moveSnake();
-    getResult.bestResult();
-  }
-
-
   changeDirection(keyCode) {
     if (keyCode === 37 && this.direction !== "right") {
       this.direction = "left";
@@ -110,11 +99,11 @@ class Snake{
       { x: 2, y: 4 },
     ];
     this.snakeSpeed = snakeSpeed;
-    this.field = newGame.field;
+    this.field = newField.field;
   }
   drawSnake(){
     for (let i = 0; i < this.snake.length; i++){
-    let snakeBody = `<div class="snake" style='left:${this.snake[i].x * newGame.squareSize + "px"}; top: ${this.snake[i].y * newGame.squareSize + "px"}'>`;
+    let snakeBody = `<div class="snake" style='left:${this.snake[i].x * newField.squareSize + "px"}; top: ${this.snake[i].y * newField.squareSize + "px"}'>`;
     this.field.innerHTML += snakeBody;
     }
   };
@@ -130,12 +119,12 @@ class Apple{
     this.field = field;
   }
   drawApple(){
-    this.field.innerHTML += `<div class="apple" style='left:${this.apple.x * newGame.squareSize + "px"}; top: ${this.apple.y * newGame.squareSize + "px"}'>`;
+    this.field.innerHTML += `<div class="apple" style='left:${this.apple.x * newField.squareSize + "px"}; top: ${this.apple.y * newField.squareSize + "px"}'>`;
   };
   
   generateApple() {
-    this.apple.x = Math.floor(Math.random() * (newGame.cell));
-    this.apple.y = Math.floor(Math.random() * (newGame.cell));
+    this.apple.x = Math.floor(Math.random() * (newField.cell));
+    this.apple.y = Math.floor(Math.random() * (newField.cell));
     
   }
 }
@@ -169,13 +158,25 @@ class Result{
   }
 }
 
-let newGame = new GameField(500, 20);
-let newSnake = new Snake(500);
-let newApple = new Apple(newGame.field)
-let getResult = new Result(0);
+class startGame{
+  gameLoop() {
+    newField.clearElement();
+    newSnake.drawSnake();
+    newApple.drawApple();
+    getResult.updateScore();
+    newField.moveSnake();
+    getResult.bestResult();
+  }
+}
 
-setInterval(newGame.gameLoop.bind(newGame), newSnake.snakeSpeed);
+const newGame = new startGame();
+const newField = new GameField(500, 20);
+const newSnake = new Snake(500);
+const newApple = new Apple(newField.field)
+const getResult = new Result(0);
+
+setInterval(newGame.gameLoop.bind(newField), newSnake.snakeSpeed);
 
 document.addEventListener("keydown", function (event) {
-  newGame.changeDirection(event.keyCode);
+  newField.changeDirection(event.keyCode);
 });
